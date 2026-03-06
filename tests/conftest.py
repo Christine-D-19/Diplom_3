@@ -3,9 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 
-
-def pytest_addoption(parser):
-    parser.addoption("--browser", action="store", default="chrome", choices=["chrome", "firefox"])
+from helpers.api_user import register_user_via_api, delete_user_via_api
 
 
 @pytest.fixture(params=["chrome", "firefox"])
@@ -23,4 +21,18 @@ def driver(request):
 
     yield drv
     drv.quit()
-    
+
+
+@pytest.fixture
+def registered_user():
+    user, response = register_user_via_api()
+    assert response.status_code == 200
+
+    body = response.json()
+    access_token = body.get("accessToken")
+
+    yield user
+
+    if access_token:
+        delete_user_via_api(access_token)
+        

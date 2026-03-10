@@ -3,7 +3,7 @@ import string
 
 import requests
 
-from data.urls import BASE_URL
+from data.urls import REGISTER_API_URL, DELETE_USER_API_URL
 from data.user_data import UserCredentials
 
 
@@ -20,7 +20,7 @@ def register_user_via_api():
     }
 
     response = requests.post(
-        f"{BASE_URL}/api/auth/register",
+        REGISTER_API_URL,
         json=payload,
         timeout=20,
     )
@@ -36,7 +36,7 @@ def register_user_via_api():
 
 def delete_user_via_api(access_token: str):
     return requests.delete(
-        f"{BASE_URL}/api/auth/user",
+        DELETE_USER_API_URL,
         headers={"Authorization": access_token},
         timeout=20,
     )

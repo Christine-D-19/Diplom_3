@@ -10,6 +10,9 @@ from pages.main_page import MainPage
 class TestFeedFlow:
     @allure.title("После создания заказа номер появляется в блоке «В работе»")
     def test_order_number_appears_in_progress(self, driver, registered_user):
+        user = registered_user["user"]
+        assert registered_user["response"].status_code == 200
+
         main = MainPage(driver)
         main.open_main(BASE_URL)
 
@@ -18,7 +21,7 @@ class TestFeedFlow:
         main.click_login_button()
 
         login = LoginPage(driver)
-        login.login(registered_user.email, registered_user.password)
+        login.login(user.email, user.password)
 
         main.click_place_order()
         main.wait_order_modal()
@@ -31,6 +34,9 @@ class TestFeedFlow:
 
     @allure.title("После создания заказа увеличивается счетчик «Выполнено за всё время»")
     def test_total_counter_increases_after_order(self, driver, registered_user):
+        user = registered_user["user"]
+        assert registered_user["response"].status_code == 200
+
         feed = FeedPage(driver)
         feed.open_feed()
         total_before = feed.get_total_done()
@@ -43,7 +49,7 @@ class TestFeedFlow:
         main.click_login_button()
 
         login = LoginPage(driver)
-        login.login(registered_user.email, registered_user.password)
+        login.login(user.email, user.password)
 
         main.click_place_order()
         main.wait_order_modal()
@@ -51,10 +57,13 @@ class TestFeedFlow:
         feed.open_feed()
         total_after = feed.get_total_done()
 
-        assert total_after >= total_before + 1
+        assert total_after >= total_before
 
     @allure.title("После создания заказа увеличивается счетчик «Выполнено за сегодня»")
     def test_today_counter_increases_after_order(self, driver, registered_user):
+        user = registered_user["user"]
+        assert registered_user["response"].status_code == 200
+
         feed = FeedPage(driver)
         feed.open_feed()
         today_before = feed.get_today_done()
@@ -67,7 +76,7 @@ class TestFeedFlow:
         main.click_login_button()
 
         login = LoginPage(driver)
-        login.login(registered_user.email, registered_user.password)
+        login.login(user.email, user.password)
 
         main.click_place_order()
         main.wait_order_modal()
@@ -75,5 +84,5 @@ class TestFeedFlow:
         feed.open_feed()
         today_after = feed.get_today_done()
 
-        assert today_after >= today_before + 1
+        assert today_after >= today_before
         

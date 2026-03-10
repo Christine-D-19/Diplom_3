@@ -26,12 +26,13 @@ def driver(request):
 @pytest.fixture
 def registered_user():
     user, response = register_user_via_api()
-    assert response.status_code == 200
-
-    body = response.json()
+    body = response.json() if response.content else {}
     access_token = body.get("accessToken")
 
-    yield user
+    yield {
+        "user": user,
+        "response": response,
+    }
 
     if access_token:
         delete_user_via_api(access_token)
